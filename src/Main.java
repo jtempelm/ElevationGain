@@ -62,38 +62,38 @@ class Solution {
     public static int getMinimumCost(int[][] elevationMap) {
         int[][] costMap = new int[elevationMap.length][elevationMap[0].length];
 
-        for (int x = 0; x < elevationMap.length; x++) {
-            for (int y = 0; y < elevationMap[x].length; y++) {
-                if (x - 1 >= 0 && y - 1 >= 0) { //middle
-                    int xElevationDifference = elevationMap[x][y] - elevationMap[x - 1][y];
-                    if (xElevationDifference < 0) { //we do not care about downhill
-                        xElevationDifference = 0;
-                    }
-
-                    int yElevationDifference = elevationMap[x][y] - elevationMap[x][y - 1];
+        for (int y = 0; y < elevationMap.length; y++) {
+            for (int x = 0; x < elevationMap[y].length; x++) {
+                if (y - 1 >= 0 && x - 1 >= 0) { //middle
+                    int yElevationDifference = elevationMap[y][x] - elevationMap[y - 1][x];
                     if (yElevationDifference < 0) { //we do not care about downhill
                         yElevationDifference = 0;
                     }
 
-                    if (xElevationDifference < yElevationDifference) { //came from x
-                        costMap[x][y] = costMap[x - 1][y] + xElevationDifference;
-                    } else if (yElevationDifference < xElevationDifference) { //came from y
-                        costMap[x][y] = costMap[x][y - 1] + xElevationDifference;
+                    int xElevationDifference = elevationMap[y][x] - elevationMap[y][x - 1];
+                    if (xElevationDifference < 0) { //we do not care about downhill
+                        xElevationDifference = 0;
+                    }
+
+                    if ((costMap[y - 1][x] + yElevationDifference) < (costMap[y][x - 1] + xElevationDifference)) { //came from y
+                        costMap[y][x] = costMap[y - 1][x] + yElevationDifference;
+                    } else if ((costMap[y][x - 1] + xElevationDifference) < (costMap[y - 1][x] + yElevationDifference)) { //came from x
+                        costMap[y][x] = costMap[y][x - 1] + yElevationDifference;
                     } else { //doesn't matter, come from the least expensive path
-                        costMap[x][y] = Math.min(costMap[x - 1][y], costMap[x][y - 1]);
+                        costMap[y][x] = Math.min(costMap[y - 1][x], costMap[y][x - 1]);
                     }
-                } else if (x - 1 >= 0) { //x edge
-                    int xElevationDifference = elevationMap[x][y] - elevationMap[x - 1][y];
-                    if (xElevationDifference < 0) { //we do not care about downhill
-                        xElevationDifference = 0;
-                    }
-                    costMap[x][y] = costMap[x - 1][y] + xElevationDifference;
                 } else if (y - 1 >= 0) { //y edge
-                    int yElevationDifference = elevationMap[x][y] - elevationMap[x][y - 1];
+                    int yElevationDifference = elevationMap[y][x] - elevationMap[y - 1][x];
                     if (yElevationDifference < 0) { //we do not care about downhill
                         yElevationDifference = 0;
                     }
-                    costMap[x][y] = costMap[x][y - 1] + yElevationDifference;
+                    costMap[y][x] = costMap[y - 1][x] + yElevationDifference;
+                } else if (x - 1 >= 0) { //x edge
+                    int xElevationDifference = elevationMap[y][x] - elevationMap[y][x - 1];
+                    if (xElevationDifference < 0) { //we do not care about downhill
+                        xElevationDifference = 0;
+                    }
+                    costMap[y][x] = costMap[y][x - 1] + xElevationDifference;
                 }
             }
         }
